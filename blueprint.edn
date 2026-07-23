@@ -1,4 +1,4 @@
-{:itonami.blueprint/id "cloud-itonami-0123"
+{:itonami.blueprint/id "cloud-itonami-isic-0123"
  :itonami.blueprint/name "Citrus Orchard Operations Coordination"
  :itonami.blueprint/isic-rev5 "0123"
  :itonami.blueprint/domain :agriculture/citrus-fruit-growing
@@ -9,4 +9,4 @@
  :itonami.blueprint/required-technologies [:robotics :identity :forms :audit-ledger]
  :itonami.blueprint/optional-technologies [:telemetry :optimization :dmn :bpmn]
  :itonami.blueprint/status :public-oss
- :itonami.blueprint/maturity :implemented}
+ :itonami.blueprint/maturity :blueprint}
