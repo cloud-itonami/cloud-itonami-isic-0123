@@ -33,7 +33,7 @@
   Usage: `clojure -M:dev:render-html [out-file]`
   (default `docs/samples/operator-console.html`)."
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [citrusops.facts :as facts]
             [citrusops.governor :as governor]
             [citrusops.operation :as operation]
