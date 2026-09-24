@@ -1,0 +1,43 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README "Robotics premise": a facility-management robot keeps orchard block
+;; records, schedules field operations and handles supplies for a citrus grower
+;; (ISIC 0123). Its physical work: moving filled field bins out of the grove,
+;; pumping spray / irrigation water through the grove line, and forced-air
+;; cooling of picked fruit.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-0123"
+ :cases
+ [{:id :field-bin-out-of-grove
+   :kind :transport
+   :procedure "bin carrier moves one filled citrus field bin from the tree row to the loading pad"
+   :params {:mass-kg 400.0 :distance-m 180.0 :v-max-mps 1.8 :a-max-mps2 0.6
+            :brake-decel-mps2 1.5 :drive-force-n 1600.0 :crr 0.07
+            :cog-height-m 0.80 :support-half-length-m 0.70 :max-time-s 3600.0}
+   :sweep {:param :payload-kg :values [200.0 350.0 450.0 600.0 800.0]}
+   :quantity :cycle-time-s
+   :limit {:max 120.0 :basis "estimate: one bin per leg at the picking crew's bin-fill rate"}
+   :boundary {:lo 50.0 :hi 2000.0}}
+  {:id :grove-irrigation-line
+   :kind :pipe-flow
+   :procedure "pump drives water through the 300 m grove supply line to the micro-sprinkler manifold"
+   :params {:diameter-m 0.08 :length-m 300.0 :roughness-m 1.5e-6
+            :density-kg-m3 998.0 :viscosity-pa-s 1.0e-3 :pump-efficiency 0.65 :elevation-m 6.0}
+   :sweep {:param :q-m3s :values [0.004 0.008 0.012 0.016 0.020]}
+   :quantity :pump-power-w
+   :limit {:max 4000.0 :basis "estimate: rated shaft power of a 4 kW grove irrigation pump"}
+   :boundary {:lo 0.001 :hi 0.04}}
+  {:id :picked-citrus-precooling
+   :kind :thermal
+   :procedure "picked oranges are forced-air cooled with 5 C air; the fruit centre temperature is judged"
+   :params {:thickness-m 0.038 :conductivity-w-mk 0.50 :density-kg-m3 950.0 :specific-heat-j-kgk 3750.0
+            :t0-c 28.0 :t-hot-c 5.0 :h-front-w-m2k 20.0 :t-back-ambient-c 28.0 :h-back-w-m2k 0.0
+            :threshold-c 99.0 :nodes 11}
+   :sweep {:param :duration-s :values [3600.0 7200.0 14400.0 28800.0 43200.0]}
+   :quantity :final-back-c
+   :limit {:max 8.0 :basis "estimate: seven-eighths cooling of 28 C fruit toward 5 C air ends near 8 C"}
+   :boundary {:lo 1800.0 :hi 86400.0}}]}
